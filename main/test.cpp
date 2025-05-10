@@ -63,28 +63,6 @@ int main(int argc, char *argv[]) {
         beforePointCloudPtr = afterPointCloudPtr;
         afterPointCloudPtr = pointCloudPtr;
 
-        // testing knn search
-        /*
-        {
-            auto const kdTree = KdTree(*pointCloudPtr);
-            const size_t neighborSize = 50;
-
-            const auto neighbors =
-                kdTree.knnSearch(pointCloudPtr->points.back(), neighborSize);
-
-            auto o3dPointCloudPtr = pointCloudPtr->toOpen3dPointCloud();
-
-            o3dPointCloudPtr->PaintUniformColor(Color::Red);
-
-            for (auto idx : neighbors) {
-                o3dPointCloudPtr->colors_.at(idx) = Color::Green;
-            }
-
-            open3d::visualization::DrawGeometries(
-                {o3dPointCloudPtr}, filename.filename(), 1600, 900);
-        }
-        */
-
         if (beforePointCloudPtr && afterPointCloudPtr) {
 
             // remove ground points
@@ -99,11 +77,15 @@ int main(int argc, char *argv[]) {
             o3dBeforePointCloudPtr->PaintUniformColor({1.0, 0.0, 0.0});
             o3dAfterPointCloudPtr->PaintUniformColor({0.0, 1.0, 0.0});
 
-            Eigen::Matrix4d initTransfrom = Eigen::Matrix4d::Identity();
-            initTransfrom.block<3, 1>(0, 3) = 0.0001 * Eigen::Vector3d::Ones();
+            // Eigen::Matrix4d initTransfrom = Eigen::Matrix4d::Identity();
+            // initTransfrom.block<3, 1>(0, 3) = 0.0001 *
+            // Eigen::Vector3d::Ones();
 
-            auto const icpResult = IterativeClosestPointAlgorithm(
-                *beforePointCloudPtr, *afterPointCloudPtr, initTransfrom);
+            IcpRunner<PointToPlaneIcp> icpRunner;
+
+            auto const maybeIcpResult =
+                icpRunner.run(*beforePointCloudPtr, *afterPointCloudPtr,
+                              Eigen::Matrix4d::Identity(), {10U, 0.5, 0.01});
 
             /*
             Eigen::Matrix4d transformation = Eigen::Matrix4d::Identity();
@@ -125,6 +107,8 @@ int main(int argc, char *argv[]) {
             }
             */
 
+            auto const &icpResult = maybeIcpResult.value();
+
             std::vector<size_t> sourceIndicies(
                 icpResult.correspondenceSet.size());
             std::vector<size_t> targetIndicies(
@@ -141,14 +125,13 @@ int main(int argc, char *argv[]) {
             auto targetPointCloudPtr =
                 o3dAfterPointCloudPtr->SelectByIndex(targetIndicies);
 
+            // open3d::visualization::DrawGeometries(
+            //     {sourcePointCloudPtr, targetPointCloudPtr},
+            //     filename.filename(), 1600, 900);
 
-            open3d::visualization::DrawGeometries(
-                {sourcePointCloudPtr, targetPointCloudPtr}, filename.filename(),
-                1600, 900);
-
-            open3d::visualization::DrawGeometries(
-                {o3dBeforePointCloudPtr, o3dAfterPointCloudPtr},
-                filename.filename(), 1600, 900);
+            // open3d::visualization::DrawGeometries(
+            //     {o3dBeforePointCloudPtr, o3dAfterPointCloudPtr},
+            //     filename.filename(), 1600, 900);
 
             auto transformBeforePointCloudPtr =
                 std::make_shared<open3d::geometry::PointCloud>(
@@ -157,20 +140,6 @@ int main(int argc, char *argv[]) {
             open3d::visualization::DrawGeometries(
                 {transformBeforePointCloudPtr, o3dAfterPointCloudPtr},
                 " transform", 1600, 900);
-
-            // auto const maxCorrespondenceDistance = 5.0;
-            // auto const initTransform = Eigen::Matrix4d::Identity().eval();
-            // auto const registrationResult =
-            //     open3d::pipelines::registration::RegistrationICP(
-            //         *o3dBeforePointCloudPtr, *o3dAfterPointCloudPtr,
-            //         maxCorrespondenceDistance, initTransform);
-
-            // o3dBeforePointCloudPtr->Transform(
-            //     registrationResult.transformation_);
-
-            // open3d::visualization::DrawGeometries(
-            //     {o3dBeforePointCloudPtr, o3dAfterPointCloudPtr},
-            //     filename.filename(), 1600, 900);
         }
     }
 

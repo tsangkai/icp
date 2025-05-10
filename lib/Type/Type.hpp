@@ -45,13 +45,11 @@ struct PointCloud {
         tempPointCloudPtr->NormalizeNormals();
         normals = tempPointCloudPtr->normals_;
         //
-
-
-
     }
 
     std::shared_ptr<open3d::geometry::PointCloud> toOpen3dPointCloud() const {
-        auto pointCloudPtr = std::make_shared<open3d::geometry::PointCloud>(points);
+        auto pointCloudPtr =
+            std::make_shared<open3d::geometry::PointCloud>(points);
         pointCloudPtr->normals_ = normals;
         return pointCloudPtr;
     }

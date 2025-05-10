@@ -19,8 +19,7 @@ constexpr int LEAF_MAX_SIZE = 15;
 
 }    // namespace
 
-template <class PointCloudType>
-class KdTree {
+template <class PointCloudType> class KdTree {
   public:
     KdTree(const PointCloudType &pointCloud)
         : data_(Eigen::Map<const Eigen::MatrixXd>(

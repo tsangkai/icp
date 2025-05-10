@@ -1,9 +1,3 @@
-
-
-
-
-
-
 add_library(KdTree INTERFACE)
 target_sources(KdTree INTERFACE
     FILE_SET HEADERS 
