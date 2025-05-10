@@ -11,9 +11,9 @@
 #include <Eigen/Core>
 #include <open3d/Open3D.h>
 
-#include "lib/Icp.hpp"
-#include "lib/KdTree.hpp"
-#include "lib/Type.hpp"
+#include "Icp.hpp"
+#include "KdTree.hpp"
+#include "Type.hpp"
 
 namespace Color {
 Eigen::Vector3d Red{1.0, 0.0, 0.0};

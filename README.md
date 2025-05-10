@@ -24,3 +24,7 @@ download kitti dataset: https://github.com/Deepak3994/Kitti-Dataset/tree/master
 
 read data reference: https://github.com/utiasSTARS/pykitti/tree/master
 
+
+#### Cmake
+
+https://iamsorush.com/posts/cpp-cmake-build/
