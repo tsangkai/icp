@@ -53,6 +53,25 @@ struct PointCloud {
         pointCloudPtr->normals_ = normals;
         return pointCloudPtr;
     }
+
+    // TODO: very heuristic for the first version
+    void removeGroundPoint() {
+        size_t idx = 0;
+        size_t size = points.size();
+
+        for (size_t i = 0; i < size; ++i) {
+            if (points[i].z() >= 0.05) {
+                points[idx] = points[i];
+                normals[idx] = normals[i];
+                intensities[idx] = intensities[i];
+                ++idx;
+            }
+        }
+
+        points.resize(idx);
+        normals.resize(idx);
+        intensities.resize(idx);
+    }
 };
 
 }    // namespace MyType

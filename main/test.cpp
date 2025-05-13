@@ -9,6 +9,7 @@
 #include <thread>
 
 #include <Eigen/Core>
+#include <cxxopts.hpp>
 #include <open3d/Open3D.h>
 
 #include "Icp.hpp"
@@ -21,34 +22,24 @@ Eigen::Vector3d Green{0.0, 1.0, 0.0};
 Eigen::Vector3d Blue{0.0, 0.0, 1.0};
 }    // namespace Color
 
-// TODO: very heuristic for the first version
-void removeGroundPoint(std::shared_ptr<MyType::PointCloud> pointCloudPtr) {
-    size_t idx = 0;
-    size_t size = pointCloudPtr->points.size();
-
-    for (size_t i = 0; i < size; ++i) {
-        if (pointCloudPtr->points[i].z() >= 0.05) {
-            pointCloudPtr->points[idx] = pointCloudPtr->points[i];
-            pointCloudPtr->normals[idx] = pointCloudPtr->normals[i];
-            pointCloudPtr->intensities[idx] = pointCloudPtr->intensities[i];
-            ++idx;
-        }
-    }
-
-    pointCloudPtr->points.resize(idx);
-    pointCloudPtr->normals.resize(idx);
-    pointCloudPtr->intensities.resize(idx);
-}
-
 int main(int argc, char *argv[]) {
-    auto const datasetPath = "/home/tsangkai/dataset/kitti/2011_10_03/"
-                             "2011_10_03_drive_0027_sync/velodyne_points/data";
-    auto const pointCloudData = std::filesystem::path{datasetPath};
+
+    cxxopts::Options options("MyProgram", "One line description of MyProgram");
+
+    options.add_options()("d,dataset", "Dataset path",
+                          cxxopts::value<std::string>());
+
+    auto result = options.parse(argc, argv);
+
+    auto const datasetPath =
+        std::filesystem::path{result["dataset"].as<std::string>()};
+
+    auto const pointCloudFolder = std::filesystem::path{"velodyne_points/data"};
 
     std::set<std::filesystem::path> sorted_by_name;
 
     for (auto const &entry :
-         std::filesystem::directory_iterator{pointCloudData})
+         std::filesystem::directory_iterator{datasetPath / pointCloudFolder})
         sorted_by_name.insert(entry.path());
 
     std::shared_ptr<MyType::PointCloud> beforePointCloudPtr;
@@ -66,8 +57,8 @@ int main(int argc, char *argv[]) {
         if (beforePointCloudPtr && afterPointCloudPtr) {
 
             // remove ground points
-            removeGroundPoint(beforePointCloudPtr);
-            removeGroundPoint(afterPointCloudPtr);
+            beforePointCloudPtr->removeGroundPoint();
+            afterPointCloudPtr->removeGroundPoint();
 
             auto o3dBeforePointCloudPtr =
                 beforePointCloudPtr->toOpen3dPointCloud();
@@ -77,35 +68,11 @@ int main(int argc, char *argv[]) {
             o3dBeforePointCloudPtr->PaintUniformColor({1.0, 0.0, 0.0});
             o3dAfterPointCloudPtr->PaintUniformColor({0.0, 1.0, 0.0});
 
-            // Eigen::Matrix4d initTransfrom = Eigen::Matrix4d::Identity();
-            // initTransfrom.block<3, 1>(0, 3) = 0.0001 *
-            // Eigen::Vector3d::Ones();
-
             IcpRunner<PointToPlaneIcp> icpRunner;
 
             auto const maybeIcpResult =
                 icpRunner.run(*beforePointCloudPtr, *afterPointCloudPtr,
                               Eigen::Matrix4d::Identity(), {10U, 0.5, 0.01});
-
-            /*
-            Eigen::Matrix4d transformation = Eigen::Matrix4d::Identity();
-            CorrespondenceSet correspondenceSet;
-            for (int i = 0; i < 15; ++i) {
-                correspondenceSet = findCorrespondence(*beforePointCloudPtr,
-                                                       *afterPointCloudPtr,
-                                                       transformation, 0.5);
-
-                transformation =
-                    findTransformation(*beforePointCloudPtr,
-                                       *afterPointCloudPtr, correspondenceSet);
-
-                std::cout << "iteration: " << i << std::endl;
-                std::cout << "transformation: \n"
-                          << transformation << std::endl;
-                std::cout << "correspondence size: " << correspondenceSet.size()
-                          << std::endl;
-            }
-            */
 
             auto const &icpResult = maybeIcpResult.value();
 
