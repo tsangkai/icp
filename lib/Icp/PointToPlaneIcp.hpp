@@ -6,15 +6,15 @@
 
 class PointToPlaneIcp {
   public:
-    static Eigen::Matrix4d
+    static MyType::Transformation
     findTransformation(const MyType::PointCloud &sourcePointCloud,
                        const MyType::PointCloud &targetPointCloud,
-                       const Eigen::Matrix4d &transformation,
+                       const MyType::Transformation &transformation,
                        const CorrespondenceSet &correspondenceSet);
 
     static CorrespondenceSet
     findCorrespondence(const MyType::PointCloud &sourcePointCloud,
                        const MyType::PointCloud &targetPointCloud,
-                       const Eigen::Matrix4d &transformation,
+                       const MyType::Transformation &transformation,
                        double minDistance);
 };

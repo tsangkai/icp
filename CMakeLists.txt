@@ -10,14 +10,20 @@ find_package(nanoflann)
 
 
 include(FetchContent)
+
 FetchContent_Declare(
   cxxopts
   GIT_REPOSITORY https://github.com/jarro2783/cxxopts.git
   GIT_TAG 4bf61f08697b110d9e3991864650a405b3dd515d # v3.2.1
 )
-
-# The external is downloaded by this:
 FetchContent_MakeAvailable(cxxopts)
+
+FetchContent_Declare(
+  manif
+  GIT_REPOSITORY https://github.com/artivis/manif.git
+  GIT_TAG c49fec8150e62821d9be7e2a3ac49db75bf7bb92 # 0.0.5
+)
+FetchContent_MakeAvailable(manif)
 
 
 add_subdirectory(main)

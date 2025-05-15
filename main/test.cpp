@@ -70,9 +70,9 @@ int main(int argc, char *argv[]) {
 
             IcpRunner<PointToPlaneIcp> icpRunner;
 
-            auto const maybeIcpResult =
-                icpRunner.run(*beforePointCloudPtr, *afterPointCloudPtr,
-                              Eigen::Matrix4d::Identity(), {10U, 0.5, 0.01});
+            auto const maybeIcpResult = icpRunner.run(
+                *beforePointCloudPtr, *afterPointCloudPtr,
+                MyType::Transformation::Identity(), {10U, 0.5, 0.01});
 
             auto const &icpResult = maybeIcpResult.value();
 
@@ -103,7 +103,7 @@ int main(int argc, char *argv[]) {
             auto transformBeforePointCloudPtr =
                 std::make_shared<open3d::geometry::PointCloud>(
                     o3dBeforePointCloudPtr->Transform(
-                        icpResult.transformation));
+                        icpResult.transformation.matrix()));
             open3d::visualization::DrawGeometries(
                 {transformBeforePointCloudPtr, o3dAfterPointCloudPtr},
                 " transform", 1600, 900);

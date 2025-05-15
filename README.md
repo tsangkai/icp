@@ -8,6 +8,10 @@
 - `open3d::geometry::PointCloud::DetectPlanarPatches()`
 
 
+```
+   ./main/Test  -d /home/tsangkai/dataset/kitti/2011_10_03/2011_10_03_drive_0027_sync/
+```
+
 ## Log
 
 

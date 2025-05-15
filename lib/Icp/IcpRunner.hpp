@@ -7,7 +7,7 @@
 
 template <typename T>
 concept IcpConcept = requires(T a, const MyType::PointCloud &pointCloud,
-                              const Eigen::Matrix4d &transformation,
+                              const MyType::Transformation &transformation,
                               CorrespondenceSet correspondenceSet,
                               double distance) {
     // specify findCorrespondence()
@@ -19,7 +19,7 @@ concept IcpConcept = requires(T a, const MyType::PointCloud &pointCloud,
     {
         T::findTransformation(pointCloud, pointCloud, transformation,
                               correspondenceSet)
-    } -> std::convertible_to<Eigen::Matrix4d>;
+    } -> std::convertible_to<MyType::Transformation>;
 };
 
 template <typename IcpType>
@@ -30,7 +30,7 @@ class IcpRunner {
     std::expected<IcpResult, IcpError>
     run(const MyType::PointCloud &sourcePointCloud,
         const MyType::PointCloud &targetPointCloud,
-        const Eigen::Matrix4d &initTransformation,
+        const MyType::Transformation &initTransformation,
         const IcpParameter &parameter) {
 
         auto transformation = initTransformation;

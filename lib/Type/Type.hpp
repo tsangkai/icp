@@ -7,6 +7,8 @@
 
 namespace MyType {
 
+using Transformation = Eigen::Transform<double, 3, Eigen::Isometry>;
+
 struct PointCloud {
     std::vector<Eigen::Vector3d> points;
     std::vector<Eigen::Vector3d> normals;

@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include "Type.hpp"
 #include <Eigen/Core>
 
 // (source, targe)
@@ -15,7 +16,7 @@ struct IcpParameter {
 };
 
 struct IcpResult {
-    Eigen::Matrix4d transformation;
+    MyType::Transformation transformation;
     CorrespondenceSet correspondenceSet;
 };
 
