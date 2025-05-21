@@ -51,6 +51,8 @@ int main(int argc, char *argv[]) {
         auto pointCloudPtr = std::make_shared<MyType::PointCloud>();
         pointCloudPtr->readPointCloudFromKitti(filename);
 
+        pointCloudPtr->estimateNormals();
+
         beforePointCloudPtr = afterPointCloudPtr;
         afterPointCloudPtr = pointCloudPtr;
 
