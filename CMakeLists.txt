@@ -7,6 +7,7 @@ project(ICP_TEST LANGUAGES C CXX)
 find_package(Open3D)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 find_package(nanoflann)
+find_package(OpenMP)
 
 
 include(FetchContent)

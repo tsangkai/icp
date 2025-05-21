@@ -9,6 +9,8 @@
 
 
 ```
+   cmake ..
+   cmake --build .
    ./main/Test  -d /home/tsangkai/dataset/kitti/2011_10_03/2011_10_03_drive_0027_sync/
 ```
 
@@ -32,3 +34,10 @@ read data reference: https://github.com/utiasSTARS/pykitti/tree/master
 #### Cmake
 
 https://iamsorush.com/posts/cpp-cmake-build/
+
+
+
+#### Bazel
+
+https://blog.engflow.com/2024/06/27/migrating-to-bazel-modules-aka-bzlmod---the-easy-parts/
+

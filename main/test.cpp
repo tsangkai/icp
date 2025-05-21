@@ -24,7 +24,7 @@ Eigen::Vector3d Blue{0.0, 0.0, 1.0};
 
 int main(int argc, char *argv[]) {
 
-    cxxopts::Options options("MyProgram", "One line description of MyProgram");
+    cxxopts::Options options("ICP test", "A small program to run ICP.");
 
     options.add_options()("d,dataset", "Dataset path",
                           cxxopts::value<std::string>());
@@ -100,10 +100,16 @@ int main(int argc, char *argv[]) {
             //     {o3dBeforePointCloudPtr, o3dAfterPointCloudPtr},
             //     filename.filename(), 1600, 900);
 
+            auto transformedPointCloud =
+                beforePointCloudPtr->transform(icpResult.transformation);
+
             auto transformBeforePointCloudPtr =
-                std::make_shared<open3d::geometry::PointCloud>(
-                    o3dBeforePointCloudPtr->Transform(
-                        icpResult.transformation.matrix()));
+                transformedPointCloud.toOpen3dPointCloud();
+
+            // auto transformBeforePointCloudPtr =
+            //     std::make_shared<open3d::geometry::PointCloud>(
+            //         o3dBeforePointCloudPtr->Transform(
+            //             icpResult.transformation.matrix()));
             open3d::visualization::DrawGeometries(
                 {transformBeforePointCloudPtr, o3dAfterPointCloudPtr},
                 " transform", 1600, 900);

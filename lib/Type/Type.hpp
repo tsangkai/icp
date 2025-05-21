@@ -56,6 +56,18 @@ struct PointCloud {
         return pointCloudPtr;
     }
 
+    PointCloud transform(const Transformation &transform) {
+        PointCloud transformedPointCloud;
+        transformedPointCloud.points = points;
+
+#pragma omp parallel for
+        for (size_t i = 0; i < points.size(); ++i) {
+            transformedPointCloud.points[i] = transform * points[i];
+        }
+
+        return transformedPointCloud;
+    }
+
     // TODO: very heuristic for the first version
     void removeGroundPoint() {
         size_t idx = 0;
