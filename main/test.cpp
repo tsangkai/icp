@@ -94,24 +94,12 @@ int main(int argc, char *argv[]) {
             auto targetPointCloudPtr =
                 o3dAfterPointCloudPtr->SelectByIndex(targetIndicies);
 
-            // open3d::visualization::DrawGeometries(
-            //     {sourcePointCloudPtr, targetPointCloudPtr},
-            //     filename.filename(), 1600, 900);
-
-            // open3d::visualization::DrawGeometries(
-            //     {o3dBeforePointCloudPtr, o3dAfterPointCloudPtr},
-            //     filename.filename(), 1600, 900);
-
             auto transformedPointCloud =
                 beforePointCloudPtr->transform(icpResult.transformation);
 
             auto transformBeforePointCloudPtr =
                 transformedPointCloud.toOpen3dPointCloud();
 
-            // auto transformBeforePointCloudPtr =
-            //     std::make_shared<open3d::geometry::PointCloud>(
-            //         o3dBeforePointCloudPtr->Transform(
-            //             icpResult.transformation.matrix()));
             open3d::visualization::DrawGeometries(
                 {transformBeforePointCloudPtr, o3dAfterPointCloudPtr},
                 " transform", 1600, 900);

@@ -26,6 +26,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(manif)
 
+FetchContent_Declare(
+  absl
+  GIT_REPOSITORY https://github.com/abseil/abseil-cpp.git
+  GIT_TAG bc257a88f7c1939f24e0379f14a3589e926c950c
+)
+FetchContent_MakeAvailable(absl)
+
 
 add_subdirectory(main)
 add_subdirectory(lib)
