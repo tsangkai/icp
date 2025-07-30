@@ -1,18 +1,7 @@
-add_executable(Test)
-target_sources(Test PRIVATE test.cpp)
+add_executable(run_icp)
+target_sources(run_icp PRIVATE run_icp.cpp)
 
-target_link_libraries(Test Open3D::Open3D)
-target_link_libraries(Test Eigen3::Eigen)
-target_link_libraries(Test Icp)
-target_link_libraries(Test cxxopts)
-
-
-
-add_executable(TestTimestamp)
-target_sources(TestTimestamp PRIVATE test_timestamp.cpp)
-
-target_link_libraries(TestTimestamp Open3D::Open3D)
-target_link_libraries(TestTimestamp Eigen3::Eigen)
-target_link_libraries(TestTimestamp Icp)
-target_link_libraries(TestTimestamp cxxopts)
-target_link_libraries(TestTimestamp absl::log)
+target_link_libraries(run_icp Open3D::Open3D)
+target_link_libraries(run_icp Eigen3::Eigen)
+target_link_libraries(run_icp Icp)
+target_link_libraries(run_icp cxxopts)
