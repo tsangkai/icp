@@ -3,7 +3,9 @@
 
 #include "IcpCommon.hpp"
 #include "Type.hpp"
+#include <chrono>
 #include <expected>
+#include <iostream>
 
 template <typename T>
 concept IcpConcept = requires(T a, const MyType::PointCloud &pointCloud,
@@ -61,9 +63,17 @@ class IcpRunner {
             }
             correspondenceNumberHistory_.push_back(correspondenceSet.size());
 
+            const std::chrono::time_point<std::chrono::system_clock>
+                beforeTimestamp = std::chrono::system_clock::now();
             auto const updateTransformation =
                 IcpType::findTransformation(sourcePointCloud, targetPointCloud,
                                             transformation, correspondenceSet);
+            const std::chrono::time_point<std::chrono::system_clock>
+                afterTimestamp = std::chrono::system_clock::now();
+            std::cout << "find transformation time: "
+                      << std::chrono::duration_cast<std::chrono::milliseconds>(
+                             afterTimestamp - beforeTimestamp)
+                      << std::endl;
 
             transformation = updateTransformation;
         }

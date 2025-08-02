@@ -6,12 +6,12 @@
 #include <Eigen/Cholesky>
 #include <manif/SE3.h>
 
-#pragma omp declare reduction(+ : Eigen::Matrix<double, 6, 6> : omp_out =      \
-                                  (omp_out + omp_in).eval())                   \
-    initializer(omp_priv = Eigen::Matrix<double, 6, 6>::Zero())
-#pragma omp declare reduction(+ : Eigen::Matrix<double, 6, 1> : omp_out =      \
-                                  (omp_out + omp_in).eval())                   \
-    initializer(omp_priv = Eigen::Matrix<double, 6, 1>::Zero())
+// #pragma omp declare reduction(+ : Eigen::Matrix<double, 6, 6> : omp_out =      \
+//                                   (omp_out + omp_in).eval())                   \
+//     initializer(omp_priv = Eigen::Matrix<double, 6, 6>::Zero())
+// #pragma omp declare reduction(+ : Eigen::Matrix<double, 6, 1> : omp_out =      \
+//                                   (omp_out + omp_in).eval())                   \
+//     initializer(omp_priv = Eigen::Matrix<double, 6, 1>::Zero())
 
 namespace {
 
@@ -24,6 +24,15 @@ inline Eigen::Matrix3d cross(const Eigen::Vector3d& vec) {
     return mat;
 }
 // clang-format on
+
+inline Eigen::Matrix<double, 3, 6> jacobian(const Eigen::Matrix3d &R,
+                                            const Eigen::Vector3d &p) {
+    Eigen::Matrix<double, 3, 6> J1 = Eigen::Matrix<double, 3, 6>::Zero();
+    J1.block<3, 3>(0, 0) = R;
+    J1.block<3, 3>(0, 3) = -R * cross(p);
+
+    return J1;
+}
 
 inline Eigen::Matrix3d Exp(const Eigen::Vector3d &vec) {
     auto const norm = vec.norm();
@@ -56,7 +65,7 @@ MyType::Transformation PointToPlaneIcp::findTransformation(
 
     auto const T = manif::SE3d{transformation};
 
-#pragma omp parallel reduction(+ : A, b)
+    // #pragma omp parallel reduction(+ : A, b)
     for (auto const &[sourceIdx, targetIdx] : correspondenceSet) {
 
         // using manif to calculate the jacobian might be slow
@@ -66,11 +75,16 @@ MyType::Transformation PointToPlaneIcp::findTransformation(
             targetPointCloud.normals[targetIdx].transpose();
         auto const transformedSourcePoint = transformation * sourcePoint;
 
-        auto J1 = Eigen::Matrix<double, 3, 6>::Zero().eval();
-        J1.block<3, 3>(0, 0) = transformation.rotation();
-        J1.block<3, 3>(0, 3) = -transformation.rotation() * cross(sourcePoint);
+        // (182)
+        // auto J1 = Eigen::Matrix<double, 3, 6>::Zero().eval();
+        // J1.block<3, 3>(0, 0) = transformation.rotation();
+        // J1.block<3, 3>(0, 3) = -transformation.rotation() *
+        // cross(sourcePoint);
 
-        auto const J = Eigen::Matrix<double, 1, 6>{targetNormalT * J1};
+        auto const J = Eigen::Matrix<double, 1, 6>{
+            targetNormalT * jacobian(transformation.rotation(), sourcePoint)};
+
+        // auto const J = Eigen::Matrix<double, 1, 6>{targetNormalT * J1};
         auto const f = targetNormalT * (transformedSourcePoint - targetPoint);
 
         A += (J.transpose() * J) / (correspondenceSet.size());

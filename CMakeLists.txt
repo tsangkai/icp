@@ -7,7 +7,6 @@ project(ICP_TEST LANGUAGES C CXX)
 find_package(Open3D)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 find_package(nanoflann)
-find_package(OpenMP)
 
 
 include(FetchContent)
@@ -27,12 +26,10 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(manif)
 
 FetchContent_Declare(
-  absl
-  GIT_REPOSITORY https://github.com/abseil/abseil-cpp.git
-  GIT_TAG bc257a88f7c1939f24e0379f14a3589e926c950c
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
 )
-FetchContent_MakeAvailable(absl)
-
+FetchContent_MakeAvailable(googletest)
 
 add_subdirectory(main)
 add_subdirectory(lib)
