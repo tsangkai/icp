@@ -4,10 +4,10 @@
 #include <type_traits>
 
 template <typename T>
-constexpr bool is_se3_instantiable = requires { typename SE3<T>; };
+constexpr bool is_se3_instantiable = requires { typename LieGroup::SE3<T>; };
 
 template <typename T>
-constexpr bool is_se3_algb_instantiable = requires { typename SE3Algb<T>; };
+constexpr bool is_se3_algb_instantiable = requires { typename LieGroup::SE3Algb<T>; };
 
 
 TEST(TestSE3, Type) {
@@ -21,9 +21,13 @@ TEST(TestSE3, Type) {
 }
 
 TEST(TestSE3, Operation) {
-    SE3_d object;
-    SE3Algb_d delta{7 * Eigen::Vector<double, 6>::Ones()};
+    LieGroup::SE3_d object;
+    LieGroup::SE3Algb_d delta{0.07 * Eigen::Vector<double, 6>::Ones()};
 
-    std::cout << (object + delta) << std::endl;
+    LieGroup::SE3_d result = (object + delta);
+
+    std::cout << result << std::endl;
     std::cout << delta << std::endl;
+    std::cout << "--------------" << std::endl;
+    std::cout << (result - object) << std::endl;
 }
