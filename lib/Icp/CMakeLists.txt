@@ -10,4 +10,4 @@ target_sources(
 target_link_libraries(Icp Eigen3::Eigen)
 target_link_libraries(Icp KdTree)
 target_link_libraries(Icp Type)
-target_link_libraries(Icp manif)
+target_link_libraries(Icp SE3)

@@ -46,6 +46,10 @@ template <std::floating_point T>
 inline SE3Algb<T> operator-(const SE3<T> &m1, const SE3<T> &m2);
 
 template <std::floating_point T>
+inline Eigen::Matrix<T, 3, 6> jacobbian_Mp_to_M(const SE3<T> &m,
+                                                const Eigen::Vector<T, 3> &p);
+
+template <std::floating_point T>
 std::ostream &operator<<(std::ostream &os, const SE3<T> &obj);
 template <std::floating_point T>
 std::ostream &operator<<(std::ostream &os, const SE3Algb<T> &obj);

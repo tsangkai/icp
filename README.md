@@ -20,3 +20,9 @@ To run the ICP algorithm on the KITTI dataset,
 ```shell
    ./main/run_icp  -d [KITTI dataset folder]
 ```
+
+
+## Log
+
+### 2025.08.05
+- Using the `LieGroup` library, there is about 50-100ms drop in ICP time.

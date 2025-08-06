@@ -39,10 +39,3 @@ template <std::floating_point T> class Group {
     DataType data_;
 };
 ```
-
-
-
-For Lie algebra
-
-```
-```

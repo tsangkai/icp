@@ -1,7 +1,5 @@
 
 
-    
-
 /// Implementation for the Lie group: SE(3)
 
 inline Eigen::Matrix3d V(const Eigen::Vector3d &vec) {
@@ -86,8 +84,18 @@ inline SE3Algb<T> operator-(const SE3<T> &m1, const SE3<T> &m2) {
 }
 
 template <std::floating_point T>
+inline Eigen::Matrix<T, 3, 6> jacobbian_Mp_to_M(const SE3<T> &m,
+                                                const Eigen::Vector<T, 3> &p) {
+    auto const &R = m.data().rotation();
+    auto jacobbian = Eigen::Matrix<T, 3, 6>::Zero().eval();
+    jacobbian.template block<3, 3>(0, 0) = R;
+    jacobbian.template block<3, 3>(0, 3) = -R * cross(p);
+
+    return jacobbian;
+}
+
+template <std::floating_point T>
 std::ostream &operator<<(std::ostream &os, const SE3Algb<T> &obj) {
     os << obj.data_;
     return os;
 }
-

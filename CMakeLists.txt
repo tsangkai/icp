@@ -19,13 +19,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(cxxopts)
 
 FetchContent_Declare(
-  manif
-  GIT_REPOSITORY https://github.com/artivis/manif.git
-  GIT_TAG c49fec8150e62821d9be7e2a3ac49db75bf7bb92 # 0.0.5
-)
-FetchContent_MakeAvailable(manif)
-
-FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
 )
